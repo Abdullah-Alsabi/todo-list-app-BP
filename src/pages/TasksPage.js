@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import TaskCard from "../components/TaskCard";
 import { Button, InputGroup, FormControl } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { addTask } from "../reducers/tasks/tasks";
+
 export default function TasksPage() {
-  const [tasks, setTasks] = useState(
-    JSON.parse(localStorage.getItem("tasks")) || []
-  );
+  const dispatch = useDispatch();
+
+  const tasks = useSelector((state) => state.tasks);
   const [inputText, setInputText] = useState("");
-  const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -17,37 +19,15 @@ export default function TasksPage() {
       alert("Add Task First !!!");
       return;
     }
-    setTasks([
-      ...tasks,
-      {
+    dispatch(
+      addTask({
         text: inputText,
         id: new Date().getTime(),
         isCompleted: false,
-      },
-    ]);
+      })
+    );
+
     setInputText("");
-  }
-
-  function hundleUpdate(id) {
-    let updatedTasks = tasks.map((t) => {
-      if (t.id === id) {
-        t.text = editedText;
-        return t;
-      }
-      return t;
-    });
-    console.log(updatedTasks);
-    setTasks(updatedTasks);
-  }
-
-  function hundleDelete(id) {
-    let newTasks = tasks.filter((t) => {
-      if (t.id !== id) {
-        return t;
-      }
-    });
-    console.log(newTasks);
-    setTasks(newTasks);
   }
 
   return (
@@ -67,13 +47,7 @@ export default function TasksPage() {
       <div className="container">
         <div className="d-flex justify-content-center flex-column align-items-center">
           {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              hundleDelete={hundleDelete}
-              hundleUpdate={hundleUpdate}
-              setEditedText={setEditedText}
-            />
+            <TaskCard key={task.id} task={task} />
           ))}
         </div>
       </div>

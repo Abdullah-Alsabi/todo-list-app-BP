@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
+import TaskPage from "./pages/TaskPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import NavBar from "./components/NavBar";
 
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/about-page" element={<AboutUsPage />} />
           <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/task/:id" element={<TaskPage />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </div>

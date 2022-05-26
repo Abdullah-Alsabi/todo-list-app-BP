@@ -1,17 +1,29 @@
 import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
-export default function TaskCard({
-  task,
-  hundleDelete,
-  hundleUpdate,
-  setEditedText,
-}) {
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { removeTask, updateTask } from "../reducers/tasks/tasks";
+
+import "./TaskCard.css";
+
+export default function TaskCard({ task }) {
+  const [editedText, setEditedText] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   return (
     <div className="mt-2 ">
       <Card style={{ width: "18rem" }}>
         <Card.Body>
-          <Card.Text>{task.text}</Card.Text>
+          <Card.Text
+            className="text-link"
+            onClick={() => navigate("/task/" + task.id)}
+          >
+            {task.text}
+          </Card.Text>
           <div className="d-flex justify-content-around ">
             {isEditing ? (
               <div className="d-flex flex-column">
@@ -24,7 +36,13 @@ export default function TaskCard({
                   className="mt-2"
                   variant="warning"
                   onClick={() => {
-                    hundleUpdate(task.id);
+                    dispatch(
+                      updateTask({
+                        id: task.id,
+                        text: editedText,
+                        isCompleted: task.isCompleted,
+                      })
+                    );
                     setIsEditing(false);
                   }}
                 >
@@ -52,7 +70,7 @@ export default function TaskCard({
                 <Button
                   className="mt-2"
                   variant="danger"
-                  onClick={() => hundleDelete(task.id)}
+                  onClick={() => dispatch(removeTask(task.id))}
                 >
                   Delete
                 </Button>
